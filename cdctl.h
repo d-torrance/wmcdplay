@@ -85,7 +85,7 @@ public:
       tracksel=tsRandom;
       tskOurPlay=false;
 
-      if(cdfdopen=(cdfd=open(device,O_RDONLY | O_NONBLOCK))!=-1){
+      if((cdfdopen = (cdfd = open(device,O_RDONLY | O_NONBLOCK))) != -1) {
          status_state=ssNoCD;
          status_track=0;
          status_pos=0;
@@ -213,9 +213,19 @@ public:
                    start = cd_trklist[status_track].track_start;
                    stop = start + cd_trklist[status_track].track_len - _CDCTL_SENSITIVITY;
                    now = ((sc.cdsc_absaddr.msf.minute) * 60 + sc.cdsc_absaddr.msf.second) * 75 + sc.cdsc_absaddr.msf.frame - CD_MSF_OFFSET;
+/*
+cout << "=============" << endl;
+cout << "start:" << start << endl;
+cout << "stop:" << stop << endl;
+cout << "now:" << now << endl;
+*/
 	           if(now>0 && (now<start || now>=stop)){
                       status_state=ssPlaying;
                       selecttrack();
+/*
+cout << "Play track " << status_track << endl;
+cout << "=============" << endl;
+*/
                       doStatus();
                       return;
                    }

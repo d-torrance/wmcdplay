@@ -1,0 +1,62 @@
+#!/usr/bin/make -f
+# This is a -*- makefile -*-
+# Modified from the sample debian/rules that uses debhelper.
+# GNU copyright 1998 by Marcelo Magallon.
+# GNU copyright 1997 by Joey Hess.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+build: build-arch build-indep
+build-arch: build-stamp
+build-indep: build-stamp
+
+build-stamp:
+	dh_testdir
+	xmkmf -a
+	perl -pi -e 's/-DX_LOCALE//g;' Makefile
+	$(MAKE) CC=c++ CXXDEBUGFLAGS="-g -O2"
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+	[ ! -f Makefile ] || $(MAKE) distclean
+	dh_clean
+
+# Build architecture-independent files here.
+binary-indep: build
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build
+#	dh_testversion
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+	install -s -m 0755 wmcdplay `pwd`/debian/wmcdplay/usr/bin/wmcdplay
+	install -m 0644 XPM/*.art `pwd`/debian/wmcdplay/usr/share/wmcdplay
+#	( cd XPM ; tar cf - . ) | \
+#		( cd debian/tmp/usr/share/wmcdplay/ ; tar xvf - )
+#	mv debian/tmp/usr/share/wmcdplay/*.art \
+#	  debian/tmp/usr/share/wmcdplay
+	dh_installdocs
+	dh_installmenu
+	dh_installman debian/wmcdplay.1x
+	dh_installchangelogs
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+source diff:                                                                  
+	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary

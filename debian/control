@@ -1,0 +1,18 @@
+Source: wmcdplay
+Section: sound
+Priority: optional
+Build-Depends: debhelper (>=9), xutils-dev, libx11-dev, libxext-dev, libxpm-dev
+Maintainer: Debian QA Group <packages@qa.debian.org>
+Standards-Version: 3.9.5
+
+Package: wmcdplay
+Architecture: any
+Section: sound
+Priority: optional
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Suggests: wmaker
+Description: CD player based on ascd designed for WindowMaker
+ There's nothing in the program that makes it *require* WindowMaker,
+ except maybe the look. It's extremely customizable, provides great
+ control, and runs on a 64x64 window. You can get it too look almost
+ like anything, provided of course you READ the documentation.

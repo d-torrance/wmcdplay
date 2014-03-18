@@ -1,0 +1,119 @@
+wmcdplay (1.0beta1-11) unstable; urgency=low
+
+  * QA upload.
+  * Maintainer field set to QA Group.
+  * Bump Standards-Version to 3.9.5.
+  * Set debhelper compatibility level to 9.
+  * Add dependency on misc:Depends.
+  * Do not start description synopsis with an article.
+  * Use dh_prep instead of deprecated dh_clean -k.
+  * Only call make distclean when Makefile is available.
+  * Add missing targets to debian/rules: build-{arch,indep}.
+
+ -- Emanuele Rocca <ema@debian.org>  Tue, 18 Mar 2014 16:24:30 +0100
+
+wmcdplay (1.0beta1-10) unstable; urgency=low
+
+  * Updated to latest Policy and Menu
+  * Cleaned up Build-Depends (Closes: #485237)
+
+ -- John H. Robinson, IV <jaqque@debian.org>  Tue,  8 Jul 2008 12:51:16 -0700
+
+wmcdplay (1.0beta1-9.1) unstable; urgency=low
+
+  * Non-maintainer upload
+  * Splitted xlibs-dev build-dep. (Closes:  #347115)
+
+ -- Marc 'HE' Brockschmidt <he@debian.org>  Sat, 21 Jan 2006 11:56:02 +0100
+
+wmcdplay (1.0beta1-9) unstable; urgency=low
+
+  * New Maintainer
+  * New standards version
+  * Added menu entry
+  * Created man page
+
+ -- John H. Robinson, IV <jaqque@debian.org>  Tue, 17 Aug 2004 23:57:31 -0700
+
+wmcdplay (1.0beta1-8) unstable; urgency=high
+
+  * Changed Imakefile to use ComplexProgramTargetNoMan rather
+    than ComplexProgramTarget (Closes: #123732)
+  * Added a menu entry for Window Maker.
+
+ -- Anthony Wong <ypwong@debian.org>  Sat, 12 Jan 2002 13:04:25 +0800
+
+wmcdplay (1.0beta1-7) unstable; urgency=low
+
+  * New maintainer (Closes: #73008)
+  * Moved the program from /usr/X11R6/bin to /usr/bin
+  * Cleaned up Build-Depends to suit the current X packaging scheme.
+
+ -- Anthony Wong <ypwong@debian.org>  Sun, 14 Jan 2001 11:52:45 +0800
+
+wmcdplay (1.0beta1-6) unstable; urgency=low
+
+  * Orphaning the package
+
+ -- Sean 'Shaleh' Perry <shaleh@debian.org>  Sun, 27 Aug 2000 23:01:10 -0700
+
+wmcdplay (1.0beta1-5) unstable; urgency=low
+
+  * Bug fix release
+  * Closes: #51168, #59778
+
+ -- Sean 'Shaleh' Perry <shaleh@debian.org>  Tue, 18 Jul 2000 12:32:12 -0700
+
+wmcdplay (1.0beta1-4) unstable; urgency=low
+
+  * New maintainer
+
+ -- Sean E. Perry <shaleh@debian.org>  Fri,  3 Sep 1999 16:38:14 -0700
+
+wmcdplay (1.0beta1-3) unstable; urgency=low
+
+  * New maintainer
+
+ -- Neale Pickett <neale@debian.org>  Thu, 18 Feb 1999 16:18:29 -0700
+
+wmcdplay (1.0beta1-2) unstable; urgency=low
+
+  * wmcdplay.cc: modified the location of system art files to reflect
+    placement on Debian's package.
+  * wmcdplay.cc: modified default value for cd polling interval (from
+    about 1 second to about 5 seconds) (closes: bug#25121)
+  * wmcdplay.cc: added -i switch to let user specify the cd polling
+    interval (sent upstream)
+  * Ekkehard Kraemer has confirmed that previous release fixed reported
+    bug, re: "wmcdplay doesn't work" (closes: bug#25535)
+
+ -- Marcelo E. Magallon <mmagallo@debian.org>  Sun, 11 Oct 1998 14:27:49 -0600
+
+wmcdplay (1.0beta1-1) unstable; urgency=low
+
+  * New upstream version
+  * debian/rules: nukes -DX_LOCALE from Makefile
+  * debian/rules: now calls $(MAKE) CC=c++ CXXDEBUGFLAGS="-g -O2"
+  * Artwork is now installed in /usr/share/wmcdplay
+  
+ -- Marcelo E. Magallon <mmagallo@debian.org>  Sun,  4 Oct 1998 20:36:12 -0600
+
+wmcdplay (0.8-1) unstable; urgency=low
+
+  * New upstream version
+  * Added CC = c++ to Imakefile (there's something weird going on, cause
+    the upstream author doesn't need this)
+  * Uploaded to master
+
+ -- Marcelo E. Magallon <mmagallo@debian.org>  Sat,  9 May 1998 21:41:16 -0600
+
+wmcdplay (0.7-1) unstable; urgency=low
+
+  * Initial release
+  * Modified Imakefile to include CC = c++, otherwise, it won't build.
+
+ -- Marcelo E. Magallon <mmagallo@debian.org>  Wed,  8 Apr 1998 18:55:39 -0600
+
+Local variables:
+mode: debian-changelog
+End:

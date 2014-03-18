@@ -1,0 +1,2 @@
+?package(wmcdplay):needs="x11" section="Applications/Sound"\
+  title="WMCDplay" command="wmcdplay"
