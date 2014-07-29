@@ -7,8 +7,6 @@ Standards-Version: 3.9.5
 
 Package: wmcdplay
 Architecture: any
-Section: sound
-Priority: optional
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Suggests: wmaker
 Description: CD player based on ascd designed for WindowMaker
