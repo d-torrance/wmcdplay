@@ -12,6 +12,7 @@ wmcdplay (1.0beta1-12) unstable; urgency=low
     - New file.
   * debian/rules
     - Simplify to use dh.
+    - Pass CXXFLAGS and LDFLAGS to make to enable hardening.
 
  -- Doug Torrance <dtorrance@monmouthcollege.edu>  Tue, 29 Jul 2014 09:11:19 -0500
 
