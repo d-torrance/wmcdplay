@@ -1,3 +1,9 @@
+wmcdplay (1.0beta1-12) unstable; urgency=low
+
+  * New maintainer (Closes: #632877).
+
+ -- Doug Torrance <dtorrance@monmouthcollege.edu>  Tue, 29 Jul 2014 09:11:19 -0500
+
 wmcdplay (1.0beta1-11) unstable; urgency=low
 
   * QA upload.
@@ -114,6 +120,4 @@ wmcdplay (0.7-1) unstable; urgency=low
 
  -- Marcelo E. Magallon <mmagallo@debian.org>  Wed,  8 Apr 1998 18:55:39 -0600
 
-Local variables:
-mode: debian-changelog
-End:
+
