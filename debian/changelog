@@ -12,9 +12,12 @@ wmcdplay (1.0beta1-12) unstable; urgency=low
     - New file.
   * debian/patches/fix_hurd_ftbfs.patch
     - Fix FTBFS on Hurd; thanks to Samuel Thibault <sthibault@debian.org>
-      (Closes: 647964).
+      (Closes: #647964).
   * debian/rules
     - Simplify to use dh.
+    - Previous debian/rules used install -s, which resulted in a stripped binary
+      even when DEB_BUILD_OPTIONS=nostrip was specified.  This no longer occurs
+      (Closes: #438267).
     - Pass CXXFLAGS and LDFLAGS to make to enable hardening.
 
  -- Doug Torrance <dtorrance@monmouthcollege.edu>  Tue, 29 Jul 2014 09:11:19 -0500
