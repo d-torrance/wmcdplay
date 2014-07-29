@@ -20,7 +20,7 @@
 #define CLASS       "WMCDPlay"
 
 // User defines - custom
-#define SYSARTDIR   "/usr/share/wmcdplay/"
+#define SYSARTDIR   "/usr/X11R6/lib/X11/wmcdplay/"
 #define CDDEV       "/dev/cdrom"
 #define BACKCOLOR   "#282828"
 #define LEDCOLOR    "green"
@@ -81,7 +81,6 @@ bool artwrk=false;
 char artwrkf[256]="";
 int tsel=1;
 int vol=-1;         // -1 means don't set volume
-int uinterval_e=UINTERVAL_E;
 
 // X-Windows basics - standard
 Atom _XA_GNUSTEP_WM_FUNC;
@@ -227,7 +226,7 @@ int main(int argc, char **argv)
             }
          }
          ucount++;
-         if(ucount>=((mode==ssNoCD || mode==ssTrayOpen) ? uinterval_e : UINTERVAL_N))
+         if(ucount>=((mode==ssNoCD || mode==ssTrayOpen) ? UINTERVAL_E : UINTERVAL_N))
             checkStatus(false);
          XFlush(d_display);
          usleep(50000);
@@ -365,7 +364,6 @@ void scanArgs(int argc, char **argv){
          fprintf(stderr, "   -f artwork_file        load the specified artwork file\n");
          fprintf(stderr, "   -t track_selection     set track selection   (between 0 and 4)\n");
          fprintf(stderr, "   -v volume              set the cdrom volume  (between 0 and 255)\n");
-         fprintf(stderr, "   -i interval            interval in 1/20 seconds between cd polls when empty\n");
          fprintf(stderr, "   -l led_color           use the specified color for led displays\n");
          fprintf(stderr, "   -b back_color          use the specified color for backgrounds\n");
          fprintf(stderr, "   -d cd_device           use specified device  (rather than /dev/cdrom)\n");
@@ -390,13 +388,6 @@ void scanArgs(int argc, char **argv){
          if(i<argc-1){
             i++;
             sscanf(argv[i], "%i", &vol);
-         }
-         continue;
-      }
-      if(strcmp(argv[i], "-i")==0){
-         if(i<argc-1){
-            i++;
-            sscanf(argv[i], "%i", &uinterval_e);
          }
          continue;
       }
@@ -485,7 +476,7 @@ void checkStatus(bool forced){
             drawText(art_ledpos[1][0], art_ledpos[1][1], trackstr);
       }
       if(mode==ssPlaying || mode==ssPaused || mode==ssStopped){
-         int remain = 0;
+         int remain;
          if(tdisplay==0)
             remain=cdctl->getTrackLen(cdctl->getStatusTrack())-pos;
          if(tdisplay==1)
@@ -632,7 +623,7 @@ bool readArtwork(char *artfilen){
          sprintf(artfilenbuf, "%s%s", SYSARTDIR, artfilen);
          artfile=fopen(artfilenbuf, "r");
          if(artfile==NULL){
-            fprintf(stderr,"%s : Tried to find artwork file, but failed.\n", NAME);
+            fprintf(stderr,"%s : Tried to find artwork file, but failed.\n", NAME, artfilen);
             return false;
          }
       }
