@@ -1,0 +1,21 @@
+Description: Set remain variable to zero.
+ This avoids an possible undeclared variable error five lines later if remain
+ is never set:
+    "if(remain<2250)"
+
+ Patch created for some version between 1.0beta1-5 and and 1.0beta1-8.
+ Converted to quilt for 1.0beta-12.
+Author: Doug Torrance <dtorrance@monmouthcollege.edu>
+Last-Update: 2014-07-29
+
+--- a/wmcdplay.cc
++++ b/wmcdplay.cc
+@@ -485,7 +485,7 @@
+             drawText(art_ledpos[1][0], art_ledpos[1][1], trackstr);
+       }
+       if(mode==ssPlaying || mode==ssPaused || mode==ssStopped){
+-         int remain;
++         int remain = 0;
+          if(tdisplay==0)
+             remain=cdctl->getTrackLen(cdctl->getStatusTrack())-pos;
+          if(tdisplay==1)

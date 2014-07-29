@@ -1,0 +1,19 @@
+Description: Change artwork installation directory to /usr/share/wmcdplay.
+ Move artwork files to conform to FHS.
+
+ Patch created for 1.0beta1-2.  Converted to quilt for 1.0beta-12.
+Author: Marcelo E. Magallon <mmagallo@debian.org>
+Author: Doug Torrance <dtorrance@monmouthcollege.edu>
+Last-Update: 2014-07-29
+
+--- a/wmcdplay.cc
++++ b/wmcdplay.cc
+@@ -20,7 +20,7 @@
+ #define CLASS       "WMCDPlay"
+ 
+ // User defines - custom
+-#define SYSARTDIR   "/usr/X11R6/lib/X11/wmcdplay/"
++#define SYSARTDIR   "/usr/share/wmcdplay/"
+ #define CDDEV       "/dev/cdrom"
+ #define BACKCOLOR   "#282828"
+ #define LEDCOLOR    "green"

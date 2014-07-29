@@ -1,0 +1,20 @@
+Description: Remove extra argument to format in fprintf.
+ This avoids the following warning during build:
+    "warning: too many arguments for format [-Wformat-extra-args]"
+
+ Patch created for some version between 1.0beta1-5 and and 1.0beta1-8.
+ Converted to quilt for 1.0beta-12.
+Author: Doug Torrance <dtorrance@monmouthcollege.edu>
+Last-Update: 2014-07-29
+
+--- a/wmcdplay.cc
++++ b/wmcdplay.cc
+@@ -632,7 +632,7 @@
+          sprintf(artfilenbuf, "%s%s", SYSARTDIR, artfilen);
+          artfile=fopen(artfilenbuf, "r");
+          if(artfile==NULL){
+-            fprintf(stderr,"%s : Tried to find artwork file, but failed.\n", NAME, artfilen);
++            fprintf(stderr,"%s : Tried to find artwork file, but failed.\n", NAME);
+             return false;
+          }
+       }

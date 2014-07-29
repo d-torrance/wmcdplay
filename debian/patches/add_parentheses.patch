@@ -1,0 +1,21 @@
+Description: Add parentheses in cdctl.h.
+ This avoids the following warning during build:
+   "warning: suggest parentheses around assignment used as truth value
+    [-Wparentheses]"
+
+ Patch created for some version between 1.0beta1-5 and and 1.0beta1-8.
+ Converted to quilt for 1.0beta-12.
+Author: Doug Torrance <dtorrance@monmouthcollege.edu>
+Last-Update: 2014-07-29
+
+--- a/cdctl.h
++++ b/cdctl.h
+@@ -85,7 +85,7 @@
+       tracksel=tsRandom;
+       tskOurPlay=false;
+ 
+-      if(cdfdopen=(cdfd=open(device,O_RDONLY | O_NONBLOCK))!=-1){
++      if((cdfdopen = (cdfd = open(device,O_RDONLY | O_NONBLOCK))) != -1) {
+          status_state=ssNoCD;
+          status_track=0;
+          status_pos=0;
