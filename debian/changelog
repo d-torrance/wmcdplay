@@ -10,6 +10,9 @@ wmcdplay (1.0beta1-12) unstable; urgency=low
     - New file; install artwork.
   * debian/manpages
     - New file.
+  * debian/patches/fix_hurd_ftbfs.patch
+    - Fix FTBFS on Hurd; thanks to Samuel Thibault <sthibault@debian.org>
+      (Closes: 647964).
   * debian/rules
     - Simplify to use dh.
     - Pass CXXFLAGS and LDFLAGS to make to enable hardening.

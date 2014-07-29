@@ -5,3 +5,4 @@ set_remain_to_zero.patch
 remove_extra_arg.patch
 add_parentheses.patch
 add_debugging_comments.patch
+fix_hurd_ftbfs.patch
