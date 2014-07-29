@@ -4,6 +4,8 @@ wmcdplay (1.0beta1-12) unstable; urgency=low
   * Switch to dpkg-source 3.0 (quilt) format.
     - Add debian/source/format.
     - Convert patches from previous versions; now appear in debian/patches.
+  * debian/manpages
+    - New file.
 
  -- Doug Torrance <dtorrance@monmouthcollege.edu>  Tue, 29 Jul 2014 09:11:19 -0500
 
