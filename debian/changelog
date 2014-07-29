@@ -8,6 +8,8 @@ wmcdplay (1.0beta1-12) unstable; urgency=low
     - New file; install artwork.
   * debian/manpages
     - New file.
+  * debian/rules
+    - Simplify to use dh.
 
  -- Doug Torrance <dtorrance@monmouthcollege.edu>  Tue, 29 Jul 2014 09:11:19 -0500
 
