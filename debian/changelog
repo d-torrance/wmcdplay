@@ -20,6 +20,8 @@ wmcdplay (1.0beta1-12) unstable; urgency=low
       even when DEB_BUILD_OPTIONS=nostrip was specified.  This no longer occurs
       (Closes: #438267).
     - Pass CXXFLAGS and LDFLAGS to make to enable hardening.
+  * debian/watch
+    - New file.
 
  -- Doug Torrance <dtorrance@monmouthcollege.edu>  Tue, 29 Jul 2014 09:11:19 -0500
 
