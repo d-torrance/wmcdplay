@@ -7,6 +7,8 @@ wmcdplay (1.0beta1-12) unstable; urgency=low
   * debian/control
     - Remove redundant Section and Priority fields.
     - Add Homepage, Vcs-* fields.
+  * debian/copyright
+    - Update to machine-readable format version 1.0.
   * debian/install
     - New file; install artwork.
   * debian/manpages
