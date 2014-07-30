@@ -1,3 +1,3 @@
 version=3
 opts=uversionmangle=s/(\d)[_\.\-\+]?((RC|rc|pre|dev|beta|alpha)\d*)$/$1$2/ \
-http://alpha.serverb.co.uk/debian/sf.php/wmcdplay/wmcdplay-(.+)\.(?:zip|tgz|tbz2|txz|tar\.(?:gz|bz2|xz))
+http://sf.net/wmcdplay/wmcdplay-(.+)\.(?:zip|tgz|tbz2|txz|tar\.(?:gz|bz2|xz))
