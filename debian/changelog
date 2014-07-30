@@ -9,6 +9,8 @@ wmcdplay (1.0beta1-12) unstable; urgency=low
     - Add Homepage, Vcs-* fields.
   * debian/copyright
     - Update to machine-readable format version 1.0.
+  * debian/dirs
+    - Remove file; directories already created by build process.
   * debian/install
     - New file; install artwork.
   * debian/manpages
@@ -25,7 +27,7 @@ wmcdplay (1.0beta1-12) unstable; urgency=low
   * debian/watch
     - New file.
 
- -- Doug Torrance <dtorrance@monmouthcollege.edu>  Tue, 29 Jul 2014 09:11:19 -0500
+ -- Doug Torrance <dtorrance@monmouthcollege.edu>  Wed, 30 Jul 2014 17:21:08 -0500
 
 wmcdplay (1.0beta1-11) unstable; urgency=low
 
