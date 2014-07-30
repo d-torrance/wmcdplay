@@ -6,6 +6,7 @@ wmcdplay (1.0beta1-12) unstable; urgency=low
     - Convert patches from previous versions; now appear in debian/patches.
   * debian/control
     - Remove redundant Section and Priority fields.
+    - Add Homepage, Vcs-* fields.
   * debian/install
     - New file; install artwork.
   * debian/manpages
