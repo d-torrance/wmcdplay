@@ -1,5 +1,4 @@
 Description: Add debugging comments to cdctl.h.
-
  Patch created for some version between 1.0beta1-5 and and 1.0beta1-8.
  Converted to quilt for 1.0beta-12.
 Author: Doug Torrance <dtorrance@monmouthcollege.edu>

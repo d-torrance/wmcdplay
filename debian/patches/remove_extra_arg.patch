@@ -1,7 +1,7 @@
 Description: Remove extra argument to format in fprintf.
  This avoids the following warning during build:
     "warning: too many arguments for format [-Wformat-extra-args]"
-
+ .
  Patch created for some version between 1.0beta1-5 and and 1.0beta1-8.
  Converted to quilt for 1.0beta-12.
 Author: Doug Torrance <dtorrance@monmouthcollege.edu>

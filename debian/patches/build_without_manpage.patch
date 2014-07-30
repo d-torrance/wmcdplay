@@ -2,7 +2,7 @@ Description: Build without manpage.
  Switch from using ComplexProgramTarget() to ComplexProgramTargetNoMan() in
  IMakefile.  Otherwise, build fails with:
    "*** No rule to make target `wmcdplay.man', needed by `wmcdplay._man'."
-
+ .
  Patch created for 1.0beta1-8.  Converted to quilt for 1.0beta-12.
 Bug-Debian: http://bugs.debian.org/123732
 Author: Anthony Wong <ypwong@debian.org>

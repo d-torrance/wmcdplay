@@ -1,5 +1,4 @@
 Description: Add -i option so users can specify cd polling interval.
-
  Patch created for 1.0beta1-2.  Converted to quilt for 1.0beta-12.
 Bug-Debian: http://bugs.debian.org/25121
 Author: Marcelo E. Magallon <mmagallo@debian.org>
