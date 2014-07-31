@@ -45,7 +45,7 @@ wmcdplay (1.0beta1-11) unstable; urgency=low
 
 wmcdplay (1.0beta1-10) unstable; urgency=low
 
-  * Updated to latest Policy and Men.u
+  * Updated to latest Debian Policy and Menu.
   * Cleaned up Build-Depends (Closes: #485237).
 
  -- John H. Robinson, IV <jaqque@debian.org>  Tue,  8 Jul 2008 12:51:16 -0700
@@ -53,14 +53,14 @@ wmcdplay (1.0beta1-10) unstable; urgency=low
 wmcdplay (1.0beta1-9.1) unstable; urgency=low
 
   * Non-maintainer upload.
-  * Split xlibs-dev Build-Depends (Closes:  #347115).
+  * Split xlibs-dev Build-Depends (Closes: #347115).
 
  -- Marc 'HE' Brockschmidt <he@debian.org>  Sat, 21 Jan 2006 11:56:02 +0100
 
 wmcdplay (1.0beta1-9) unstable; urgency=low
 
-  * New Maintainer.
-  * New Standards-Version.
+  * New maintainer.
+  * Update Standards-Version.
   * Add menu entry.
   * Create man page.
 
@@ -91,7 +91,7 @@ wmcdplay (1.0beta1-6) unstable; urgency=low
 wmcdplay (1.0beta1-5) unstable; urgency=low
 
   * Set standard.art symlink owner (Closes: #51168).
-  * Fix url in debian/copyright and install files according to policy
+  * Fix URL in debian/copyright and install files according to policy
     (Closes: #59778).
 
  -- Sean 'Shaleh' Perry <shaleh@debian.org>  Tue, 18 Jul 2000 12:32:12 -0700
@@ -116,14 +116,13 @@ wmcdplay (1.0beta1-2) unstable; urgency=low
     - Modify default value for cd polling interval (from about 1 second to about
       5 seconds) (Closes: #25121).
     - Add -i switch to let user specify the cd polling interval (sent upstream).
-  * Ekkehard Kraemer has confirmed that previous release fixed reported
-    bug, re: "wmcdplay doesn't work" (Closes: #25535).
 
  -- Marcelo E. Magallon <mmagallo@debian.org>  Sun, 11 Oct 1998 14:27:49 -0600
 
 wmcdplay (1.0beta1-1) unstable; urgency=low
 
   * New upstream version.
+    - Fix CD playback no longer working (Closes: #25535).
   * debian/rules:
     - Remove -DX_LOCALE from Makefile.
     - $(MAKE) CC=c++ CXXDEBUGFLAGS="-g -O2"
@@ -136,7 +135,6 @@ wmcdplay (0.8-1) unstable; urgency=low
   * New upstream version.
   * Add CC = c++ to Imakefile (there's something weird going on because
     the upstream author doesn't need this).
-  * Upload to master.
 
  -- Marcelo E. Magallon <mmagallo@debian.org>  Sat,  9 May 1998 21:41:16 -0600
 
@@ -146,5 +144,3 @@ wmcdplay (0.7-1) unstable; urgency=low
   * Modify Imakefile to include CC = c++, otherwise it won't build.
 
  -- Marcelo E. Magallon <mmagallo@debian.org>  Wed,  8 Apr 1998 18:55:39 -0600
-
-
