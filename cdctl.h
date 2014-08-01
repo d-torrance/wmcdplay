@@ -30,7 +30,15 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#ifndef __FreeBSD_kernel__
 #include <linux/cdrom.h>
+#else
+#include <sys/cdio.h>
+#define CDROMSTOP CDIOCSTOP
+#define CDROMPAUSE CDIOCPAUSE
+#define CDROMRESUME CDIOCRESUME
+#define CDROMEJECT CDIOCEJECT
+#endif
 
 // CD status values
 #define ssData     0
