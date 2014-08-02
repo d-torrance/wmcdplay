@@ -9,8 +9,10 @@ Description: Port wmcdplay to Debian GNU/kFreeBSD
 Author: Doug Torrance <dtorrance@monmouthcollege.edu>
 Last-Update: 2014-08-02
 
---- a/wmcdplay.cc
-+++ b/wmcdplay.cc
+Index: wmcdplay/wmcdplay.cc
+===================================================================
+--- wmcdplay.orig/wmcdplay.cc	2014-08-02 05:07:18.000000000 -0600
++++ wmcdplay/wmcdplay.cc	2014-08-02 05:07:18.000000000 -0600
 @@ -35,7 +35,11 @@
  #include <unistd.h>
  
@@ -23,8 +25,10 @@ Last-Update: 2014-08-02
  
  // X-Windows includes - standard
  #include <X11/X.h>
---- /dev/null
-+++ b/cdctl_freebsd.h
+Index: wmcdplay/cdctl_freebsd.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ wmcdplay/cdctl_freebsd.h	2014-08-02 05:15:13.000000000 -0600
 @@ -0,0 +1,459 @@
 +// cdctl.h - CDCtl class provides easy control of cd audio functions
 +// 05/09/98  Release 1.0 Beta1
@@ -337,7 +341,7 @@ Last-Update: 2014-08-02
 +      ioctl(cdfd, CDIOREADTOCHEADER, &hdr);
 +      cd_tracks=hdr.ending_track;
 +      cd_trklist=(struct CDTrack *)malloc(cd_tracks*sizeof(struct CDTrack));
-+#ifdef __FreeBSD__
++#ifdef __FreeBSD_kernel__
 +	struct ioc_read_toc_entry te;
 +      
 +	te.data_len = (cd_tracks + 1) * sizeof(struct cd_toc_entry);
