@@ -1,3 +1,14 @@
+wmcdplay (1.0beta1-13) UNRELEASED; urgency=medium
+
+  * Install artwork creation scripts.
+    - Add files to debian/install.
+    - Add debian/patches/install_art_scripts.patch, which updates scripts and
+      documentation to reflect the installation path.
+   * debian/patches/kfreebsd_port.patch
+    - Use version of cdctl.h from FreeBSD port when building for GNU/kFreeBSD.
+
+ -- Doug Torrance <dtorrance@monmouthcollege.edu>  Sat, 02 Aug 2014 11:02:56 -0500
+
 wmcdplay (1.0beta1-12) unstable; urgency=low
 
   * New maintainer (Closes: #632877).
