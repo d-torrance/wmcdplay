@@ -4,7 +4,7 @@ Priority: optional
 Build-Depends: debhelper (>=9), libx11-dev, libxext-dev, libxpm-dev,
  dh-autoreconf, pkg-config
 Maintainer: Doug Torrance <dtorrance@monmouthcollege.edu>
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Homepage: http://wmcdplay.sourceforge.net
 Vcs-Browser: https://github.com/d-torrance/wmcdplay
 Vcs-Git: https://github.com/d-torrance/wmcdplay.git
