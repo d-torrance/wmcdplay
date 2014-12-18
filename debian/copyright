@@ -1,7 +1,8 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: wmcdplay
-Upstream-Contact: Doug Torrance <dtorrance@monmouthcollege.edu>
-Source: http://wmcdplay.sourceforge.net
+Upstream-Contact: Window Maker Developers Team
+ <wmaker-dev@lists.windowmaker.org>
+Source: http://windomaker.org/dockapps/?name=wmcdplay
 
 Files: *
 Copyright: 1998 Sam Hawker <shawkie@geocities.com>
