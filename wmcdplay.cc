@@ -1,5 +1,4 @@
 // wmcdplay - A cd player designed for WindowMaker
-// 05/09/98  Release 1.0 Beta1
 // Copyright (C) 1998  Sam Hawker <shawkie@geocities.com>
 // This software comes with ABSOLUTELY NO WARRANTY
 // This software is free software, and you are welcome to redistribute it
@@ -20,7 +19,6 @@
 #define CLASS       "WMCDPlay"
 
 // User defines - custom
-#define SYSARTDIR   "/usr/X11R6/lib/X11/wmcdplay/"
 #define CDDEV       "/dev/cdrom"
 #define BACKCOLOR   "#282828"
 #define LEDCOLOR    "green"
@@ -35,7 +33,11 @@
 #include <unistd.h>
 
 // Includes - custom
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+#include "cdctl_freebsd.h"
+#else
 #include "cdctl.h"
+#endif
 
 // X-Windows includes - standard
 #include <X11/X.h>
@@ -81,6 +83,7 @@ bool artwrk=false;
 char artwrkf[256]="";
 int tsel=1;
 int vol=-1;         // -1 means don't set volume
+int uinterval_e=UINTERVAL_E;
 
 // X-Windows basics - standard
 Atom _XA_GNUSTEP_WM_FUNC;
@@ -142,7 +145,7 @@ void readArrayInt(char *buf, int *array, int n);
 void readArrayBool(char *buf, bool *array, int n);
 
 // Procedures and functions - artwork specials
-void createPixmap(char **data, char *buf, Pixmap *image, Pixmap *mask, int *width, int *height);
+void createPixmap(const char **data, char *buf, Pixmap *image, Pixmap *mask, int *width, int *height);
 void setBtnList(int *bset);
 bool inPolygon(int *points, int px, int py);
 
@@ -220,13 +223,13 @@ int main(int argc, char **argv)
                 pressEvent(&xev.xbutton);
              break;
              case ClientMessage:
-                if(xev.xclient.data.l[0]==deleteWin)
+                if((Atom) xev.xclient.data.l[0]==deleteWin)
                    done=true;
              break;
             }
          }
          ucount++;
-         if(ucount>=((mode==ssNoCD || mode==ssTrayOpen) ? UINTERVAL_E : UINTERVAL_N))
+         if(ucount>=((mode==ssNoCD || mode==ssTrayOpen) ? uinterval_e : UINTERVAL_N))
             checkStatus(false);
          XFlush(d_display);
          usleep(50000);
@@ -316,8 +319,8 @@ void freeXWin(){
 void createWin(Window *win, int x, int y){
    XClassHint classHint;
    *win=XCreateSimpleWindow(d_display, w_root, x, y, winsize, winsize, 0, 0, 0);
-   classHint.res_name=NAME;
-   classHint.res_class=CLASS;
+   classHint.res_name=const_cast<char *>(NAME);
+   classHint.res_class=const_cast<char *>(CLASS);
    XSetClassHint(d_display, *win, &classHint);
 }
 
@@ -350,7 +353,7 @@ unsigned long mixColor(char *colorname1, int prop1, char *colorname2, int prop2)
 void scanArgs(int argc, char **argv){
    for(int i=1;i<argc;i++){
       if(strcmp(argv[i], "-h")==0 || strcmp(argv[i], "-help")==0 || strcmp(argv[i], "--help")==0){
-         fprintf(stderr, "wmcdplay - A cd player designed for WindowMaker\n05/09/98  Release 1.0 Beta1\n");
+         fprintf(stderr, "wmcdplay - A cd player designed for WindowMaker\nRelease "VERSION"\n");
          fprintf(stderr, "Copyright (C) 1998  Sam Hawker <shawkie@geocities.com>\n");
          fprintf(stderr, "This software comes with ABSOLUTELY NO WARRANTY\n");
          fprintf(stderr, "This software is free software, and you are welcome to redistribute it\n");
@@ -364,6 +367,7 @@ void scanArgs(int argc, char **argv){
          fprintf(stderr, "   -f artwork_file        load the specified artwork file\n");
          fprintf(stderr, "   -t track_selection     set track selection   (between 0 and 4)\n");
          fprintf(stderr, "   -v volume              set the cdrom volume  (between 0 and 255)\n");
+         fprintf(stderr, "   -i interval            interval in 1/20 seconds between cd polls when empty\n");
          fprintf(stderr, "   -l led_color           use the specified color for led displays\n");
          fprintf(stderr, "   -b back_color          use the specified color for backgrounds\n");
          fprintf(stderr, "   -d cd_device           use specified device  (rather than /dev/cdrom)\n");
@@ -388,6 +392,13 @@ void scanArgs(int argc, char **argv){
          if(i<argc-1){
             i++;
             sscanf(argv[i], "%i", &vol);
+         }
+         continue;
+      }
+      if(strcmp(argv[i], "-i")==0){
+         if(i<argc-1){
+            i++;
+            sscanf(argv[i], "%i", &uinterval_e);
          }
          continue;
       }
@@ -476,7 +487,7 @@ void checkStatus(bool forced){
             drawText(art_ledpos[1][0], art_ledpos[1][1], trackstr);
       }
       if(mode==ssPlaying || mode==ssPaused || mode==ssStopped){
-         int remain;
+         int remain = 0;
          if(tdisplay==0)
             remain=cdctl->getTrackLen(cdctl->getStatusTrack())-pos;
          if(tdisplay==1)
@@ -595,7 +606,7 @@ void update(){
 
 void drawText(int x, int y, char *text){
    int drawx=x;
-   for(int i=0;i<strlen(text);i++){
+   for(size_t i=0;i<strlen(text);i++){
       char *chrptr=strchr(chrset,text[i]);
       if(chrptr!=NULL){
          int chrindex=chrptr-chrset;
@@ -623,7 +634,7 @@ bool readArtwork(char *artfilen){
          sprintf(artfilenbuf, "%s%s", SYSARTDIR, artfilen);
          artfile=fopen(artfilenbuf, "r");
          if(artfile==NULL){
-            fprintf(stderr,"%s : Tried to find artwork file, but failed.\n", NAME, artfilen);
+            fprintf(stderr,"%s : Tried to find artwork file, but failed.\n", NAME);
             return false;
          }
       }
@@ -632,12 +643,15 @@ bool readArtwork(char *artfilen){
    char buf[256];
    bool done=false;
    while(!done){
-      fgets(buf, 250, artfile);
+      if (fgets(buf, 250, artfile) == NULL) {
+         fprintf(stderr,"%s : Error reading artwork file.\n", NAME);
+         return false;
+      }
       done=(feof(artfile)!=0);
       if(!done){
 
          int keynum=0;
-         char *keystr[]={ "int art_nbtns=",
+         const char *keystr[]={ "int art_nbtns=",
                           "bool art_hidebtns=",
                           "bool art_showled[4]=",
                           "int art_ledpos[4][2]=",
@@ -685,24 +699,24 @@ bool readArtwork(char *artfilen){
                *strchr(buf, '\n')='\0';
 
                int w,h;
-               if(strncmp(buf, "static char * cdplayer_xpm", strlen("static char * cdplayer_xpm"))==0)
+               if(strncmp(buf, "static const char * cdplayer_xpm", strlen("static const char * cdplayer_xpm"))==0)
                   createPixmap(NULL, block, &pm_cd, &pm_cdmask, NULL, NULL);
-               if(strncmp(buf, "static char * symbols_xpm", strlen("static char * symbols_xpm"))==0){
+               if(strncmp(buf, "static const char * symbols_xpm", strlen("static const char * symbols_xpm"))==0){
                   createPixmap(NULL, block, &pm_sym, &pm_symmask, &w, &h);
                   art_symsize[0]=(w+1)/11-1;
                   art_symsize[1]=h;
                }
-               if(strncmp(buf, "static char * led_xpm", strlen("static char * led_xpm"))==0){
+               if(strncmp(buf, "static const char * led_xpm", strlen("static const char * led_xpm"))==0){
                   createPixmap(NULL, block, &pm_led, NULL, &w, &h);
                   art_ledsize[0]=(w+1)/strlen(chrset)-1;
                   art_ledsize[1]=h;
                }
-               if(strncmp(buf, "static char * ledsym_xpm", strlen("static char * ledsym_xpm"))==0){
+               if(strncmp(buf, "static const char * ledsym_xpm", strlen("static const char * ledsym_xpm"))==0){
                   createPixmap(NULL, block, &pm_sled, NULL, &w, &h);
                   art_ledsize[2]=(w+1)/6-1;
                   art_ledsize[3]=h;
                }
-               if(strncmp(buf, "static char * ledtsel_xpm", strlen("static char * ledtsel_xpm"))==0){
+               if(strncmp(buf, "static const char * ledtsel_xpm", strlen("static const char * ledtsel_xpm"))==0){
                   createPixmap(NULL, block, &pm_tled, NULL, &w, &h);
                   art_ledsize[4]=(w+1)/5-1;
                   art_ledsize[5]=h;
@@ -722,7 +736,10 @@ char *readBlock(FILE *dfile){
    long bytes=0;
    char *block=NULL;
    do{
-      fgets(buf, 250, dfile);
+      if (fgets(buf, 250, dfile) == NULL) {
+         fprintf(stderr,"%s : Error reading artwork file.\n", NAME);
+         return NULL;
+      }
       int buflen=strlen(buf);
       block=(char *)realloc(block, sizeof(char)*(bytes+buflen+1));
       strcpy(block+bytes, buf);
@@ -759,19 +776,21 @@ void readArrayBool(char *buf, bool *array, int n){
    }
 }
 
-void createPixmap(char **data, char *buf, Pixmap *image, Pixmap *mask, int *width, int *height){
+void createPixmap(const char **data, char *buf, Pixmap *image, Pixmap *mask, int *width, int *height){
    XpmAttributes xpmattr;
-   XpmColorSymbol xpmcsym[4]={{"back_color",     NULL, color[0]},
-                              {"led_color_high", NULL, color[1]},
-                              {"led_color_med",  NULL, color[2]},
-                              {"led_color_low",  NULL, color[3]}};
+   XpmColorSymbol xpmcsym[4]={
+      {const_cast<char *>("back_color"),     NULL, color[0]},
+      {const_cast<char *>("led_color_high"), NULL, color[1]},
+      {const_cast<char *>("led_color_med"),  NULL, color[2]},
+      {const_cast<char *>("led_color_low"),  NULL, color[3]}};
    xpmattr.numsymbols=4;
    xpmattr.colorsymbols=xpmcsym;
    xpmattr.exactColors=false;
    xpmattr.closeness=40000;
    xpmattr.valuemask=XpmColorSymbols | XpmExactColors | XpmCloseness | XpmSize;
    if(data!=NULL)
-      XpmCreatePixmapFromData(d_display, w_root, data, image, mask, &xpmattr);
+      XpmCreatePixmapFromData(d_display, w_root, const_cast<char **>(data),
+                              image, mask, &xpmattr);
    else
       XpmCreatePixmapFromBuffer(d_display, w_root, buf, image, mask, &xpmattr);
    if(width!=NULL)

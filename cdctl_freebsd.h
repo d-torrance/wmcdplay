@@ -29,12 +29,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#ifdef __linux__
-#include <linux/cdrom.h>
-#endif
-#ifdef __GNU__
-#include <sys/cdrom.h>
-#endif
+#include <sys/cdio.h>
+#include <arpa/inet.h>
+#define CD_MSF_OFFSET	150
 
 // CD status values
 #define ssData     0
@@ -89,7 +86,7 @@ public:
       tracksel=tsRandom;
       tskOurPlay=false;
 
-      if((cdfdopen = (cdfd = open(device,O_RDONLY | O_NONBLOCK))) != -1) {
+      if(cdfdopen=(cdfd=open(device,O_RDONLY | O_NONBLOCK))!=-1){
          status_state=ssNoCD;
          status_track=0;
          status_pos=0;
@@ -117,10 +114,10 @@ public:
 	  case acStop:
 
              #ifdef _CDCTL_SOFT_STOP
-             ioctl(cdfd,CDROMSTART);
+             ioctl(cdfd,CDIOCSTART);
              #endif
              #ifndef _CDCTL_SOFT_STOP
-             ioctl(cdfd,CDROMSTOP);
+             ioctl(cdfd,CDIOCSTOP);
              #endif
              tskOurPlay=false;
 
@@ -131,10 +128,10 @@ public:
              tskOurPlay=true;
           break;
           case acPause:
-             ioctl(cdfd,CDROMPAUSE);
+             ioctl(cdfd,CDIOCPAUSE);
           break;
 	  case acResume:
-             ioctl(cdfd,CDROMRESUME);
+             ioctl(cdfd,CDIOCRESUME);
           break;
 	  case acPrev:
              newtrk--;
@@ -161,13 +158,13 @@ public:
             }
           break;
 	  case acEject:
-             if(ioctl(cdfd,CDROMEJECT))
+             if(ioctl(cdfd,CDIOCEJECT))
                 status_state=ssNoCD;
              else
                 status_state=ssTrayOpen;
           break;
 	  case acClose:
-             ioctl(cdfd,CDROMCLOSETRAY);
+             ioctl(cdfd,CDIOCCLOSE);
              status_state=ssNoCD;
           break;
          }
@@ -176,9 +173,14 @@ public:
    }
    void doStatus(){
       if(cdfdopen){
-         struct cdrom_subchnl sc;
-         sc.cdsc_format=CDROM_MSF;
-         if(ioctl(cdfd, CDROMSUBCHNL, &sc)){
+         struct ioc_read_subchannel sc;
+         struct cd_sub_channel_info csci;
+         sc.address_format=CD_MSF_FORMAT;
+         sc.track = 0;
+         sc.data=&csci;
+         sc.data_len=sizeof(csci);
+         sc.data_format=CD_CURRENT_POSITION;
+         if(ioctl(cdfd, CDIOCREADSUBCHANNEL, &sc)){
             if(status_state!=ssNoCD)
                status_state=ssTrayOpen;
 	    status_track=0;
@@ -189,18 +191,18 @@ public:
             if(status_state==ssNoCD || status_state==ssTrayOpen)
 	       readTOC();
             int start,now,stop;
-            switch(sc.cdsc_audiostatus){
-             case CDROM_AUDIO_PLAY:
+            switch(csci.header.audio_status){
+             case CD_AS_PLAY_IN_PROGRESS:
                 if(status_state==ssStopped)
                    tskOurPlay=false;
                 status_state=ssPlaying;
              break;
-             case CDROM_AUDIO_PAUSED:
+             case CD_AS_PLAY_PAUSED:
                 if(status_state==ssStopped)
                    tskOurPlay=false;
                 status_state=ssPaused;
              break;
-             case CDROM_AUDIO_COMPLETED:
+             case CD_AS_PLAY_COMPLETED:
 	        if(tskOurPlay){
                    status_state=ssPlaying;
 	           selecttrack();
@@ -216,7 +218,7 @@ public:
                 if(tskOurPlay){
                    start = cd_trklist[status_track].track_start;
                    stop = start + cd_trklist[status_track].track_len - _CDCTL_SENSITIVITY;
-                   now = ((sc.cdsc_absaddr.msf.minute) * 60 + sc.cdsc_absaddr.msf.second) * 75 + sc.cdsc_absaddr.msf.frame - CD_MSF_OFFSET;
+                   now = ((csci.what.position.absaddr.msf.minute) * 60 + csci.what.position.absaddr.msf.second) * 75 + csci.what.position.absaddr.msf.frame - CD_MSF_OFFSET;
 	           if(now>0 && (now<start || now>=stop)){
                       status_state=ssPlaying;
                       selecttrack();
@@ -231,7 +233,7 @@ public:
 
                    status_state=ssStopped;
             }
-            trackinfo(&sc);
+            trackinfo(&csci);
             if(cd_trklist[status_track].track_data)
                status_state=ssData;
          }
@@ -239,19 +241,21 @@ public:
    }
    void setVolume(int l, int r){
       if(cdfdopen){
-         struct cdrom_volctrl vol;
-         vol.channel0=l;
-         vol.channel1=r;
-         ioctl(cdfd,CDROMVOLCTRL,&vol);
+         struct ioc_vol vol;
+         vol.vol[0]=l;
+         vol.vol[1]=r;
+         vol.vol[2]=0;
+         vol.vol[3]=0;
+         ioctl(cdfd,CDIOCSETVOL,&vol);
          readVolume();
       }
    }
    void readVolume(){
       if(cdfdopen){
-         struct cdrom_volctrl vol;
-         ioctl(cdfd,CDROMVOLREAD,&vol);
-         status_volumel=vol.channel0;
-         status_volumer=vol.channel1;
+         struct ioc_vol vol;
+         ioctl(cdfd,CDIOCGETVOL,&vol);
+         status_volumel=vol.vol[0];
+         status_volumer=vol.vol[1];
       }
    }
    int getVolumeL(){
@@ -300,12 +304,30 @@ private:
    void readTOC(){
       if(cd_trklist!=NULL)
          free(cd_trklist);
-      struct cdrom_tochdr hdr;
-      ioctl(cdfd, CDROMREADTOCHDR, &hdr);
-      cd_tracks=hdr.cdth_trk1;
+      struct ioc_toc_header hdr;
+      ioctl(cdfd, CDIOREADTOCHEADER, &hdr);
+      cd_tracks=hdr.ending_track;
       cd_trklist=(struct CDTrack *)malloc(cd_tracks*sizeof(struct CDTrack));
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+	struct ioc_read_toc_entry te;
+      
+	te.data_len = (cd_tracks + 1) * sizeof(struct cd_toc_entry);
+	te.data = (struct cd_toc_entry *)malloc(te.data_len);
+	te.address_format = CD_LBA_FORMAT;
+	te.starting_track = 0;
+	ioctl(cdfd, CDIOREADTOCENTRYS, &te);
+	for(int i = 0; i < cd_tracks; i++) {
+		cd_trklist[i].track_data = te.data[i].control & 4 ? true : false;
+		cd_trklist[i].track_start = ntohl(te.data[i].addr.lba);
+		cd_trklist[i].track_len = ntohl(te.data[i + 1].addr.lba)
+			- cd_trklist[i].track_start;
+	}
+	cd_len = ntohl(te.data[cd_tracks].addr.lba);
+	free(te.data);
+#else
       struct cdrom_tocentry te;
       int prev_addr=0;
+      
       for(int i=0;i<=cd_tracks;i++){
          if(i==cd_tracks)
             te.cdte_track=CDROM_LEADOUT;
@@ -324,35 +346,42 @@ private:
          else
             cd_len = this_addr;
       }
+#endif
    }
-   void trackinfo(struct cdrom_subchnl *subchnl){
+   void trackinfo(struct cd_sub_channel_info *subchnl){
+      int currenttrack = status_track;
+
       if(status_state==ssPlaying || status_state==ssPaused){
-         status_pos=((subchnl->cdsc_absaddr.msf.minute) * 60 + subchnl->cdsc_absaddr.msf.second) * 75 + subchnl->cdsc_absaddr.msf.frame - CD_MSF_OFFSET;
+         status_pos=((subchnl->what.position.absaddr.msf.minute) * 60 + subchnl->what.position.absaddr.msf.second) * 75 + subchnl->what.position.absaddr.msf.frame - CD_MSF_OFFSET;
          for(status_track=0;status_track<cd_tracks;status_track++){
-            if(status_pos<cd_trklist[status_track].track_start+cd_trklist[status_track].track_len)
+            if(status_pos<cd_trklist[status_track].track_start+cd_trklist[status_track].track_len) {
+               if (status_track != currenttrack) {
+                  status_track = currenttrack;
+               }
                break;
+            }
          }
       }
    }
    void play(){
-      struct cdrom_msf pmsf;
+      struct ioc_play_msf pmsf;
       int abs0=status_pos + CD_MSF_OFFSET;
       int abs1=cd_trklist[status_track].track_start + cd_trklist[status_track].track_len - 1 + CD_MSF_OFFSET;
-      pmsf.cdmsf_min0=abs0/(75*60);
-      pmsf.cdmsf_min1=abs1/(75*60);
-      pmsf.cdmsf_sec0=(abs0%(75*60))/75;
-      pmsf.cdmsf_sec1=(abs1%(75*60))/75;
-      pmsf.cdmsf_frame0=abs0%75;
-      pmsf.cdmsf_frame1=abs1%75;
+      pmsf.start_m=abs0/(75*60);
+      pmsf.end_m=abs1/(75*60);
+      pmsf.start_s=(abs0%(75*60))/75;
+      pmsf.end_s=(abs1%(75*60))/75;
+      pmsf.start_f=abs0%75;
+      pmsf.end_f=abs1%75;
 
       #ifdef _CDCTL_STOP_BEFORE_PLAY
-      ioctl(cdfd,CDROMSTOP);
+      ioctl(cdfd,CDIOCSTOP);
       #endif
       #ifdef _CDCTL_START_BEFORE_PLAY
-      ioctl(cdfd,CDROMSTART);
+      ioctl(cdfd,CDIOCSTART);
       #endif
 
-      ioctl(cdfd,CDROMPLAYMSF,&pmsf);
+      ioctl(cdfd,CDIOCPLAYMSF,&pmsf);
    }
    void select(int trk){
       status_track=trk;
@@ -361,10 +390,10 @@ private:
          if(cd_trklist[status_track].track_data){
 
              #ifdef _CDCTL_HARD_STOP
-             ioctl(cdfd,CDROMSTOP);
+             ioctl(cdfd,CDIOCSTOP);
              #endif
              #ifndef _CDCTL_HARD_STOP
-             ioctl(cdfd,CDROMSTART);
+             ioctl(cdfd,CDIOCSTART);
              #endif
              tskOurPlay=false;
 

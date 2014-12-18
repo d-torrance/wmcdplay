@@ -1,5 +1,4 @@
 wmcdplay - A cd player designed for WindowMaker
-05/09/98  Release 1.0 Beta1
 Copyright (C) 1998  Sam Hawker <shawkie@geocities.com>
 This software comes with ABSOLUTELY NO WARRANTY
 This software is free software, and you are welcome to redistribute it
@@ -73,7 +72,7 @@ led.xpm
    This file must begin with these 2 lines (character perfect):
 
 /* XPM */
-static char * led_xpm[] = {
+static const char * led_xpm[] = {
 
 ledsym.xpm
 ----------
@@ -86,7 +85,7 @@ ledsym.xpm
    This file must begin with these 2 lines (character perfect):
 
 /* XPM */
-static char * ledsym_xpm[] = {
+static const char * ledsym_xpm[] = {
 
 ledtsel.xpm
 -----------
@@ -100,7 +99,7 @@ ledtsel.xpm
    This file must begin with these 2 lines (character perfect):
 
 /* XPM */
-static char * ledtsel_xpm[] = {
+static const char * ledtsel_xpm[] = {
 
 symbols.xpm
 -----------
@@ -113,7 +112,7 @@ symbols.xpm
    This file must begin with these 2 lines (character perfect):
 
 /* XPM */
-static char * symbols_xpm[] = {
+static const char * symbols_xpm[] = {
    
 cdplayer.xpm
 ------------
@@ -129,7 +128,7 @@ cdplayer.xpm
    This file must begin with these 2 lines (character perfect):
 
 /* XPM */
-static char * cdplayer_xpm[] = {
+static const char * cdplayer_xpm[] = {
 
 
 THE DATA FILE - artwork.dat
@@ -247,10 +246,10 @@ Where are they?
 ARTWORK FILES
 =============
 
-All the above files should be placed in an appropriately named directory in wmcdplay/XPM/
-and the script wmcdplay/XPM/makeall should be executed.
-You should end up with a new .art file in wmcdplay/XPM/
-You should be able to load wmcdplay with this artwork using the "-f artwork_file" command
-line argument
-You should also be able to make your new artwork the compile-time default by changing the
-symbolic link wmcdplay/XPM/standard.art point to it, and recompiling
+All the above files should be placed in an appropriately named directory and the
+"makeart" script (installed by default in /usr/local/share/wmcdplay) should be
+executed in the parent directory.  You should end up with a new .art file.  You
+should be able to load wmcdplay with this artwork using the "-f artwork_file"
+command line argument.
+You should also be able to make your new artwork the compile-time default by
+using the "--with-art" option to the "configure" script.
