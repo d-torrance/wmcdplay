@@ -1,3 +1,30 @@
+wmcdplay (1.1-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+  * debian/control
+    - Remove xutils-dev from Build-Depends.
+    - Add dh-autoreconf and pkg-config to Build-Depends.
+    - Bump Standards-Version to 3.9.6; no changes required.
+    - Update Homepage.
+  * debian/copyright
+    - Update Upstream-Contact and Source.
+  * debian/install
+    - Remove file; all files now installed by upstream build system.
+  * debian/(manpages|wmcdplay.1x)
+    - Remove files; manpage added upstream.
+  * debian/patches
+    - Remove directory; patches applied upstream.
+  * debian/README.Debian
+    - Remove unnecessary file.
+  * debian/rules
+    - Add get-orig-source target.
+    - Remove override_dh_auto_* targets; no longer necessary.
+    - Use dh_autoreconf.
+  * debian/watch
+    - Update with new location.
+
+ -- Doug Torrance <dtorrance@monmouthcollege.edu>  Thu, 18 Dec 2014 19:44:18 -0600
+
 wmcdplay (1.0beta1-13) unstable; urgency=medium
 
   * Install artwork creation scripts.
