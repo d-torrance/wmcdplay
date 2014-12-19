@@ -3,12 +3,6 @@
 %:
 	dh $@
 
-override_dh_auto_configure:
-	xmkmf
-
-override_dh_auto_build:
-	dh_auto_build -- CC=c++ CXXOPTIONS="$(CXXFLAGS)" LDOPTIONS="$(LDFLAGS)"
-
 get-orig-source:
 	uscan --verbose --force-download --no-symlink
 	@if test -e ../wmcdplay-*.download ; then \
