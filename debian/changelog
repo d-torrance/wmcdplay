@@ -1,4 +1,4 @@
-wmcdplay (1.1-1) UNRELEASED; urgency=medium
+wmcdplay (1.1-1) unstable; urgency=medium
 
   * New upstream release.
   * debian/control
@@ -23,7 +23,7 @@ wmcdplay (1.1-1) UNRELEASED; urgency=medium
   * debian/watch
     - Update with new location.
 
- -- Doug Torrance <dtorrance@monmouthcollege.edu>  Thu, 18 Dec 2014 19:44:18 -0600
+ -- Doug Torrance <dtorrance@monmouthcollege.edu>  Sun, 28 Dec 2014 08:11:00 -0600
 
 wmcdplay (1.0beta1-13) unstable; urgency=medium
 
